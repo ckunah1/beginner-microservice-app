@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.kcspringeurekaclientstudentservice.domain.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 public class StudentServiceController {
@@ -39,7 +41,7 @@ public class StudentServiceController {
 	}
 
 	@RequestMapping(value = "/getStudentDetailsForSchool/{schoolname}", method = RequestMethod.GET)
-	public List<Student> getStudents(@PathVariable String schoolname) {
+	public String getStudents(@PathVariable String schoolname) throws JsonProcessingException {
 		System.out.println("Getting Student details for " + schoolname);
 
 		List<Student> studentList = schooDB.get(schoolname);
@@ -48,6 +50,12 @@ public class StudentServiceController {
 			Student std = new Student("Not Found", "N/A");
 			studentList.add(std);
 		}
-		return studentList;
+		
+		ObjectMapper objMapper = new ObjectMapper();
+		String listToString = objMapper.writeValueAsString(studentList);
+		System.out.println("listToString " + listToString);
+		
+		//return studentList;
+		return listToString;
 	}
 }
